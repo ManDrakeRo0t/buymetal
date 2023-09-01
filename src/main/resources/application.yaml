@@ -1,0 +1,32 @@
+server:
+  port: 8080
+
+
+spring:
+  main:
+    allow-circular-references: true
+  jpa:
+    hibernate:
+      ddl-auto: update
+  application:
+    name : "buy-metal"
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/buymetal"
+    username: "postgres"
+    password: "1234"
+
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+
+jwt:
+  secret: test-secret
+  token:
+    refresh:
+      expire: 30
+    access:
+      expire: 30
