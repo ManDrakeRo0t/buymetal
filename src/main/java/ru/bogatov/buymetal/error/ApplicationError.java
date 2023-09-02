@@ -3,7 +3,7 @@ package ru.bogatov.buymetal.error;
 import org.springframework.http.HttpStatus;
 
 public enum ApplicationError {
-
+    REQUEST_PARAMS_ERROR("Something went wrong", "BM-0001", HttpStatus.BAD_REQUEST),
     COMMON_ERROR("Something went wrong", "BM-0000", HttpStatus.INTERNAL_SERVER_ERROR);
 
     private final String message;

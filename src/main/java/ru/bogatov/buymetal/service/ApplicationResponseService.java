@@ -81,4 +81,8 @@ public class ApplicationResponseService {
     public Set<ApplicationResponse> getSupplierResponses(UUID id) {
         return applicationResponseRepository.findAllBySupplierId(id);
     }
+
+    public void deleteApplicationById(UUID id) {
+        applicationResponseRepository.deleteById(id);
+    }
 }

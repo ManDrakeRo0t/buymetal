@@ -1,5 +1,6 @@
 package ru.bogatov.buymetal.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import ru.bogatov.buymetal.model.enums.UserPosition;
@@ -21,6 +22,11 @@ public class User {
     @Column(unique = true)
     private String email;
 
+    private boolean isMailConfirmed;
+
+    private boolean isBlocked;
+
+    @JsonIgnore
     private String password;
 
     private String companyName;

@@ -28,6 +28,8 @@ public class UserService {
         user.setPhone(body.getPhone());
         user.setTin(body.getTin());
         user.setCompanyName(body.getCompanyName());
+        user.setBlocked(false);
+        user.setMailConfirmed(false);
         user.setPosition(body.getPosition());
         user.setFullName(body.getFullName());
         user.setCompanyAddress(body.getCompanyAddress());
@@ -54,5 +56,12 @@ public class UserService {
             throw ErrorUtils.buildException(ApplicationError.COMMON_ERROR);
         }
         return user;
+    }
+
+    public Void blockUser(UUID id) {
+        User user = findById(id);
+        user.setBlocked(true);
+        userRepository.save(user);
+        return null;
     }
 }
