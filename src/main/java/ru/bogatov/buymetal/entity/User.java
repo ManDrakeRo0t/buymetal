@@ -44,6 +44,7 @@ public class User {
 
     private String fullName;
     @Column(name = "refresh")
+    @JsonIgnore
     private String refresh;
 
     private LocalDate registrationDate;
