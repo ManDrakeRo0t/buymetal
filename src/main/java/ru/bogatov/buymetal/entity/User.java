@@ -42,6 +42,7 @@ public class User {
     @Column(unique = true)
     private String phone;
 
+    @JsonIgnore
     private String fullName;
     @Column(name = "refresh")
     private String refresh;

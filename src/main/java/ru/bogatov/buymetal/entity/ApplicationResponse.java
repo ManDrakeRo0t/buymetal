@@ -28,7 +28,6 @@ public class ApplicationResponse extends ApplicationBaseParams {
 
     private double fullPrice;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "supplier_id")
     private User supplier;
