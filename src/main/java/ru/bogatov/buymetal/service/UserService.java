@@ -8,6 +8,7 @@ import ru.bogatov.buymetal.error.ApplicationError;
 import ru.bogatov.buymetal.error.ErrorUtils;
 import ru.bogatov.buymetal.model.request.AuthorizationRequest;
 import ru.bogatov.buymetal.model.request.RegistrationRequest;
+import ru.bogatov.buymetal.model.request.UpdateUserRequest;
 import ru.bogatov.buymetal.repository.UserRepository;
 
 import java.time.LocalDate;
@@ -43,6 +44,17 @@ public class UserService {
 
     public User findById(UUID id) {
         return userRepository.findById(id).orElseThrow(() -> ErrorUtils.buildException(ApplicationError.COMMON_ERROR));
+    }
+
+    public User updateUser(UUID id, UpdateUserRequest updateUserRequest) {
+        User old = findById(id);
+        old.setFullName(updateUserRequest.getFullName());
+        old.setCompanyName(updateUserRequest.getCompanyName());
+        old.setCompanyAddress(updateUserRequest.getCompanyAddress());
+        old.setTin(updateUserRequest.getTin());
+        old.setPhone(updateUserRequest.getPhone());
+        old.setEmail(updateUserRequest.getEmail());
+        return userRepository.save(old);
     }
 
     public void updateRefresh(UUID id, String refresh) {

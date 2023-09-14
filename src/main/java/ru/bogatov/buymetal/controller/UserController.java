@@ -5,6 +5,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.bogatov.buymetal.constant.RouteConstants;
 import ru.bogatov.buymetal.entity.Payment;
+import ru.bogatov.buymetal.entity.User;
+import ru.bogatov.buymetal.model.request.UpdateUserRequest;
 import ru.bogatov.buymetal.service.PaymentService;
 import ru.bogatov.buymetal.service.UserService;
 
@@ -28,5 +30,10 @@ public class UserController {
     @PostMapping("/{id}/block")
     public ResponseEntity<Void> blockUser(@PathVariable UUID id) {
         return ResponseEntity.ok(userService.blockUser(id));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable UUID id, @RequestBody UpdateUserRequest body) {
+        return ResponseEntity.ok(userService.updateUser(id, body));
     }
 }
