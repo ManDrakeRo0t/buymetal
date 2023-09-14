@@ -4,14 +4,14 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import ru.bogatov.buymetal.entity.ApplicationBaseParams;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.UUID;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class ApplicationResponseCreationRequest extends ApplicationBaseParams {
 
-    private LocalDateTime deliverDate;
+    private Date deliverDate;
 
     private boolean inStock;
 
