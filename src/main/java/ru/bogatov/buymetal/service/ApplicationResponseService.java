@@ -13,6 +13,7 @@ import ru.bogatov.buymetal.model.request.ApplicationResponseCreationRequest;
 import ru.bogatov.buymetal.repository.ApplicationResponseRepository;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -47,7 +48,9 @@ public class ApplicationResponseService {
 
 
         if (application.getApplicationResponses() == null || application.getApplicationResponses().isEmpty()){
-            application.setApplicationResponses(Set.of(applicationResponse));
+            Set<ApplicationResponse> responses = new HashSet<>();
+            responses.add(applicationResponse);
+            application.setApplicationResponses(responses);
         } else {
             application.getApplicationResponses().add(applicationResponse);
         }

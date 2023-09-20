@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -18,7 +18,7 @@ public class ApplicationResponse extends ApplicationBaseParams {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    private LocalDateTime deliverDate;
+    private Date deliverDate;
 
     private boolean inStock;
 

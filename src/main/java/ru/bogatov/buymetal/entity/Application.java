@@ -29,6 +29,6 @@ public class Application extends ApplicationBaseParams {
     private ApplicationStatus status;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "application", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "application", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private Set<ApplicationResponse> applicationResponses;
 }
