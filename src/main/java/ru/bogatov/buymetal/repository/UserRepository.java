@@ -16,4 +16,6 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     void updateRefreshToken(@Param("id") UUID id, @Param("refresh_token") String refresh);
 
     Optional<User> findByEmail(String email);
+
+    Optional<User> findByPhone(String phone);
 }

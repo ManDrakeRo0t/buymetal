@@ -3,7 +3,9 @@ package ru.bogatov.buymetal.error;
 import org.springframework.http.HttpStatus;
 
 public enum ApplicationError {
-    REQUEST_PARAMS_ERROR("Something went wrong", "BM-0001", HttpStatus.BAD_REQUEST),
+    REQUEST_PARAMS_ERROR("Request parameters validation error", "BM-0001", HttpStatus.BAD_REQUEST),
+    AUTH_ERROR("Something went wrong during auth process", "BM-0002", HttpStatus.UNAUTHORIZED),
+    NOT_FOUND_ERROR("Data not found", "BM-0100", HttpStatus.NOT_FOUND),
     COMMON_ERROR("Something went wrong", "BM-0000", HttpStatus.INTERNAL_SERVER_ERROR);
 
     private final String message;

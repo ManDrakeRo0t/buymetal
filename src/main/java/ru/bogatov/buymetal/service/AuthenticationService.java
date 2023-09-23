@@ -36,7 +36,14 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse login(AuthorizationRequest body) {
-        User user = userService.findUserByEmailAndPassword(body);
+        User user = null;
+        if (body.getEmail() != null && !body.getEmail().isBlank()) {
+            user = userService.findUserByEmailAndPassword(body);
+        } else if (body.getPhone() != null && !body.getPhone().isBlank()){
+            user = userService.findUserByPhoneAndPassword(body);
+        } else {
+            throw ErrorUtils.buildException(ApplicationError.REQUEST_PARAMS_ERROR, "Номер телефона или почта обязательны");
+        }
         Pair<String, String> tokens = getTokens(user);
         return AuthenticationResponse.builder()
                 .user(user)
@@ -60,7 +67,7 @@ public class AuthenticationService {
             String token = jwtProvider.generateTokenForUser(user);
             return Pair.of(token, refresh);
         } catch (Exception ex) {
-            throw ErrorUtils.buildException(ApplicationError.COMMON_ERROR, ex ,"Error during token generation");
+            throw ErrorUtils.buildException(ApplicationError.COMMON_ERROR, ex , "Ошибка генерации токенов");
         }
     }
 
@@ -68,7 +75,7 @@ public class AuthenticationService {
 
         if (!jwtProvider.validateToken(token)) {
             log.warn("not able to validate refresh token : "  + token);
-            throw ErrorUtils.buildException(ApplicationError.COMMON_ERROR, "Not able to validate refresh token");
+            throw ErrorUtils.buildException(ApplicationError.AUTH_ERROR, "Токен устарел");
         }
         String userId = jwtProvider.getUserIdFromToken(token);
         User user = userService.findById(UUID.fromString(userId));
@@ -77,7 +84,7 @@ public class AuthenticationService {
             String accessToken = jwtProvider.generateTokenForUser(user);
             return Pair.of(accessToken, refresh);
         }
-        throw ErrorUtils.buildException(ApplicationError.COMMON_ERROR, "Refresh tokens not same");
+        throw ErrorUtils.buildException(ApplicationError.AUTH_ERROR, "Токены не совпадают");
     }
 
 }

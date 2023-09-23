@@ -30,7 +30,7 @@ public class ApplicationService {
         User user = userService.findById(body.getUserId());
 
         if (user.getPosition() == UserPosition.SUPPLIER) {
-            throw ErrorUtils.buildException(ApplicationError.COMMON_ERROR);
+            throw ErrorUtils.buildException(ApplicationError.REQUEST_PARAMS_ERROR, "Пользователь должен быть заказчиком");
         }
 
         Application application = fillBaseParams(body);
@@ -60,7 +60,7 @@ public class ApplicationService {
     }
 
     public Application findById(UUID id) {
-        return applicationRepository.findById(id).orElseThrow(() -> ErrorUtils.buildException(ApplicationError.COMMON_ERROR));
+        return applicationRepository.findById(id).orElseThrow(() -> ErrorUtils.buildException(ApplicationError.NOT_FOUND_ERROR, "Заявка не найдена"));
     }
 
     public Application save(Application application) {

@@ -3,7 +3,6 @@ package ru.bogatov.buymetal.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.bogatov.buymetal.entity.Payment;
-import ru.bogatov.buymetal.entity.User;
 import ru.bogatov.buymetal.error.ApplicationError;
 import ru.bogatov.buymetal.error.ErrorUtils;
 import ru.bogatov.buymetal.model.enums.PaymentStatus;
@@ -38,7 +37,7 @@ public class PaymentService {
     }
 
     public Payment getByOrderId(UUID orderId) {
-        return paymentRepository.findPaymentByRelatedOrderId(orderId).orElseThrow(() -> ErrorUtils.buildException(ApplicationError.REQUEST_PARAMS_ERROR, "Payment for order not found"));
+        return paymentRepository.findPaymentByRelatedOrderId(orderId).orElseThrow(() -> ErrorUtils.buildException(ApplicationError.REQUEST_PARAMS_ERROR, "Платеж для заказа не найден"));
     }
 
     public Payment findByOrderId(UUID orderId) {

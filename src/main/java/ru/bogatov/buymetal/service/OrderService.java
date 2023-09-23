@@ -79,11 +79,11 @@ public class OrderService {
         UserPosition whoUpdates = order.getCustomerId().equals(body.getInitiatorId()) ? UserPosition.CUSTOMER : UserPosition.SUPPLIER;
 
         if (!statusUpdatePosition.get(body.getTargetStatus()).contains(whoUpdates)) {
-            throw ErrorUtils.buildException(ApplicationError.REQUEST_PARAMS_ERROR, whoUpdates.name() + "Can't change to " + body.getTargetStatus().getValue() + " status");
+            throw ErrorUtils.buildException(ApplicationError.REQUEST_PARAMS_ERROR, whoUpdates.name() + "Не может менять статус заказа на" + body.getTargetStatus().getValue());
         }
 
         if (!statusTransitions.contains(order.getStatus().getValue() + body.getTargetStatus().getValue())) {
-            throw ErrorUtils.buildException(ApplicationError.REQUEST_PARAMS_ERROR, "This transition not available");
+            throw ErrorUtils.buildException(ApplicationError.REQUEST_PARAMS_ERROR, "Такое обновление статуса недопустимо");
         }
 
         validateUser(userService.findById(order.getCustomerId()));
@@ -100,7 +100,7 @@ public class OrderService {
 
     public void validateOrderCreation(Application application, ApplicationResponse response, User customer) {
         if (application.getStatus() != ApplicationStatus.OPEN) {
-            throw ErrorUtils.buildException(ApplicationError.REQUEST_PARAMS_ERROR, "Application status should be OPEN");
+            throw ErrorUtils.buildException(ApplicationError.REQUEST_PARAMS_ERROR, "Заявка должна быть в статусе OPEN");
         }
 
         validateUser(customer);
@@ -108,12 +108,12 @@ public class OrderService {
         application.getApplicationResponses()
                 .stream()
                 .filter(resp -> resp.getId().equals(response.getId())).findFirst()
-                .orElseThrow(() -> ErrorUtils.buildException(ApplicationError.REQUEST_PARAMS_ERROR, "Response not found under application"));
+                .orElseThrow(() -> ErrorUtils.buildException(ApplicationError.REQUEST_PARAMS_ERROR, "Ответ на завяку не найден"));
     }
 
     public Order findById(UUID id) {
         return orderRepository.findById(id)
-                .orElseThrow(() -> ErrorUtils.buildException(ApplicationError.COMMON_ERROR));
+                .orElseThrow(() -> ErrorUtils.buildException(ApplicationError.NOT_FOUND_ERROR, "Заказ не найден"));
     }
 
     private void processOrderStatusUpdate(Order order, OrderStatus targetStatus) {
@@ -159,7 +159,7 @@ public class OrderService {
 
     public void validateUser(User user) {
         if (user.isBlocked()) {
-            throw ErrorUtils.buildException(ApplicationError.REQUEST_PARAMS_ERROR, "Customer is blocked");
+            throw ErrorUtils.buildException(ApplicationError.REQUEST_PARAMS_ERROR, "Пользователь заблокирован");
         }
     }
 }

@@ -1,13 +1,18 @@
 package ru.bogatov.buymetal.controller;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.bogatov.buymetal.constant.RouteConstants;
 import ru.bogatov.buymetal.model.request.AuthorizationRequest;
 import ru.bogatov.buymetal.model.request.RegistrationRequest;
 import ru.bogatov.buymetal.model.response.AuthenticationResponse;
+import ru.bogatov.buymetal.repository.ExceptionResponse;
 import ru.bogatov.buymetal.service.AuthenticationService;
 
 @RestController
@@ -17,13 +22,20 @@ public class AuthenticationController {
 
     AuthenticationService authenticationService;
 
+    @ApiOperation(value = "Регистрация нового пользователя")
+    @ApiResponses(
+        value = {
+                @ApiResponse(code = 201, message = "Успешная регистрация", response = AuthenticationResponse.class),
+                @ApiResponse(code = 400, message = "Валидационная ошибка", response = ExceptionResponse.class)
+        }
+    )
     @PostMapping("/registration")
-    public ResponseEntity<AuthenticationResponse> registerNewUser(@RequestBody RegistrationRequest body) {
+    public ResponseEntity<AuthenticationResponse> registerNewUser(@RequestBody @Validated RegistrationRequest body) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authenticationService.registerUser(body));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthorizationRequest body) {
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody @Validated AuthorizationRequest body) {
         return ResponseEntity.status(HttpStatus.OK).body(authenticationService.login(body));
     }
 

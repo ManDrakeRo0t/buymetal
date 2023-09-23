@@ -2,6 +2,7 @@ package ru.bogatov.buymetal.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.bogatov.buymetal.constant.RouteConstants;
 import ru.bogatov.buymetal.entity.Payment;
@@ -33,7 +34,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable UUID id, @RequestBody UpdateUserRequest body) {
+    public ResponseEntity<User> updateUser(@PathVariable UUID id, @RequestBody @Validated UpdateUserRequest body) {
         return ResponseEntity.ok(userService.updateUser(id, body));
     }
 }

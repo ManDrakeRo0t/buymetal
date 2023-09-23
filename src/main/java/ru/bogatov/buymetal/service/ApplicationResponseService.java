@@ -32,7 +32,7 @@ public class ApplicationResponseService {
         Application application = applicationService.findById(body.getApplicationId());
 
         if (user.getPosition() == UserPosition.CUSTOMER) {
-            throw ErrorUtils.buildException(ApplicationError.COMMON_ERROR);
+            throw ErrorUtils.buildException(ApplicationError.REQUEST_PARAMS_ERROR, "Пользователь должен быть поставщиком");
         }
 
         ApplicationResponse applicationResponse = fillBaseParams(body);
@@ -74,7 +74,7 @@ public class ApplicationResponseService {
 
     public ApplicationResponse findById(UUID id) {
         return applicationResponseRepository.findById(id)
-                .orElseThrow(() -> ErrorUtils.buildException(ApplicationError.COMMON_ERROR));
+                .orElseThrow(() -> ErrorUtils.buildException(ApplicationError.NOT_FOUND_ERROR, "Ответ на заявку не найден"));
     }
 
     public Set<ApplicationResponse> getApplicationResponseByApplicationId(UUID id) {

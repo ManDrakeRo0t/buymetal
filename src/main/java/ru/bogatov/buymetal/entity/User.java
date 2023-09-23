@@ -24,6 +24,8 @@ public class User {
 
     private boolean isMailConfirmed;
 
+    private boolean isPhoneConfirmed;
+
     private boolean isBlocked;
 
     @JsonIgnore

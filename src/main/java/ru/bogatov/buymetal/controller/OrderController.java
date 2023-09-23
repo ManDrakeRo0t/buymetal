@@ -3,6 +3,7 @@ package ru.bogatov.buymetal.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.bogatov.buymetal.constant.RouteConstants;
 import ru.bogatov.buymetal.entity.Order;
@@ -22,12 +23,12 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping()
-    public ResponseEntity<Order> createOrder(@RequestBody OrderCreationRequest body) {
+    public ResponseEntity<Order> createOrder(@RequestBody @Validated OrderCreationRequest body) {
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createOrder(body));
     }
 
     @PostMapping("/{id}/status")
-    private ResponseEntity<Order> updateOrderStatus(@PathVariable UUID id, @RequestBody UpdateOrderStatusRequest body) {
+    private ResponseEntity<Order> updateOrderStatus(@PathVariable UUID id, @RequestBody @Validated UpdateOrderStatusRequest body) {
         return ResponseEntity.ok(orderService.updateOrderStatus(id, body));
     }
     @GetMapping("/{id}")
@@ -35,7 +36,7 @@ public class OrderController {
         return ResponseEntity.ok(orderService.findById(id));
     }
     @PostMapping("/search")
-    private ResponseEntity<Set<Order>> search(@RequestBody OrderSearchRequest body) {
+    private ResponseEntity<Set<Order>> search(@RequestBody @Validated OrderSearchRequest body) {
         return ResponseEntity.ok(orderService.search(body));
     }
 
