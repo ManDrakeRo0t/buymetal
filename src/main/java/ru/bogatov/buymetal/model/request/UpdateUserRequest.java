@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 @Data
 public class UpdateUserRequest {
 
-    @NotBlank(message = "Поле обязательно")
+    @NotBlank(message = "Поле обязательно ")
     private String fullName;
 
     @NotBlank(message = "Поле обязательно")
