@@ -26,6 +26,14 @@ public class Order {
 
     private LocalDate agreementDate;
 
+    private LocalDate startDeliveryDate;
+
+    private LocalDate paymentDate;
+
+    private LocalDate completeDate;
+
+    private LocalDate rejectDate;
+
     private LocalDate updateDate;
 
     private boolean canceledByCustomer;

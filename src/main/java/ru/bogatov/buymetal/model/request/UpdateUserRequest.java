@@ -22,7 +22,7 @@ public class UpdateUserRequest {
 
     @NotBlank(message = "Поле обязательно")
     @Pattern(regexp = "^[0-9]*$", message = "ИНН должен состоять из цифр")
-    @Size(min = 1, max = 11, message = "Длина ИНН должна быть между 9 и 11 символами")
+    @Size(min = 9, max = 11, message = "Длина ИНН должна быть между 9 и 11 символами")
     private String tin;
 
     @NotBlank(message = "Поле обязательно")

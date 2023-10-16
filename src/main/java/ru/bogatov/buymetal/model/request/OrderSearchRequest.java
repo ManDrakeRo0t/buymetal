@@ -5,6 +5,7 @@ import ru.bogatov.buymetal.model.enums.OrderStatus;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.Set;
 import java.util.UUID;
 
@@ -17,7 +18,7 @@ public class OrderSearchRequest {
     Set<OrderStatus> statuses;
     @Positive(message = "Должно быть больше 0")
     int limit;
-    @Positive(message = "Должно быть больше 0")
+    @PositiveOrZero(message = "Должно быть больше не отрицательным")
     int offset;
 
 }

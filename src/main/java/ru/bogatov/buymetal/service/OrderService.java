@@ -118,22 +118,28 @@ public class OrderService {
 
     private void processOrderStatusUpdate(Order order, OrderStatus targetStatus) {
         switch (targetStatus) {
-            case WAITING_PAYMENT:
+            case AGREED:
                 order.setAgreementDate(LocalDate.now());
+                break;
+            case WAITING_PAYMENT:
+                order.setStartDeliveryDate(LocalDate.now());
                 double paymentAmount = order.getResponse().getFullPrice() * 0.01;
                 paymentService.createPaymentUnderCustomer(order.getCustomerId(), order.getId(), paymentAmount);
                 break;
             case DELIVERY:
+                order.setPaymentDate(LocalDate.now());
                 Payment payment = paymentService.getByOrderId(order.getId());
                 payment.setStatus(PaymentStatus.PAID);
                 break;
             case COMPLETED:
+                order.setCompleteDate(LocalDate.now());
                 Application application = order.getApplication();
                 application.setStatus(ApplicationStatus.ARCHIVED);
                 applicationService.save(application);
                 //todo serviceToSendDocs
                 break;
             case REJECTED:
+                order.setRejectDate(LocalDate.now());
                 Application orderApplication = order.getApplication();
                 orderApplication.setStatus(ApplicationStatus.OPEN);
                 applicationService.save(orderApplication);

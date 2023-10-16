@@ -17,7 +17,7 @@ spring:
   datasource:
     url: "jdbc:postgresql://localhost:5432/buymetal"
     username: "postgres"
-    password: "1234"
+    password: "asd4fgh"
 
   jackson:
     serialization:
@@ -30,3 +30,26 @@ jwt:
       expire: 30
     access:
       expire: 30
+
+
+
+# TODO API
+# API for statistics
+# API for generate documents
+#
+# TODO services
+# Service to send mails and sms
+# Service to send notifications with sockets
+# Add minio
+# Add redis ???
+# Add rabbit
+#
+# TODO logic
+# Add password recovery
+# Add Email and Phone verification
+# Save order status transition history
+# Templates for mail and docs
+#
+# Questions
+# How to send push notifications
+# How to make payments
