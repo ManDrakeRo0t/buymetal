@@ -31,7 +31,11 @@ jwt:
     access:
       expire: 30
 
-
+application:
+  verification:
+    test-code: true
+    phone: false
+    mail: false
 
 # TODO API
 # API for statistics
@@ -45,9 +49,9 @@ jwt:
 # Add rabbit
 #
 # TODO logic
-# Add password recovery
-# Add Email and Phone verification
-# Save order status transition history
+# Add password recovery +
+# Add Email and Phone verification +
+# Save order status transition history +
 # Templates for mail and docs
 #
 # Questions

@@ -9,6 +9,7 @@ import ru.bogatov.buymetal.entity.User;
 import ru.bogatov.buymetal.error.ApplicationError;
 import ru.bogatov.buymetal.error.ErrorUtils;
 import ru.bogatov.buymetal.model.request.AuthorizationRequest;
+import ru.bogatov.buymetal.model.request.LoginForm;
 import ru.bogatov.buymetal.model.request.RegistrationRequest;
 import ru.bogatov.buymetal.model.response.AuthenticationResponse;
 
@@ -85,6 +86,16 @@ public class AuthenticationService {
             return Pair.of(accessToken, refresh);
         }
         throw ErrorUtils.buildException(ApplicationError.AUTH_ERROR, "Токены не совпадают");
+    }
+
+    public AuthenticationResponse resetPassword(LoginForm body) {
+        User user = userService.findUserAndResetPassword(body);
+        Pair<String, String> tokens = getTokens(user);
+        return AuthenticationResponse.builder()
+                .user(user)
+                .accessToken(tokens.getFirst())
+                .refreshToken(tokens.getSecond())
+                .build();
     }
 
 }

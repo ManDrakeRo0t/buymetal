@@ -7,4 +7,5 @@ public class RouteConstants {
     public static final String APPLICATION_RESPONSE = APPLICATION + "-response";
     public static final String ORDER = "/order";
     public static final String USER = "/user";
+    public static final String CODE = "/code";
 }

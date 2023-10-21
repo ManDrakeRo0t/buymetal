@@ -3,11 +3,13 @@ package ru.bogatov.buymetal.service;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import ru.bogatov.buymetal.entity.User;
 import ru.bogatov.buymetal.error.ApplicationError;
 import ru.bogatov.buymetal.error.ErrorUtils;
 import ru.bogatov.buymetal.model.request.AuthorizationRequest;
+import ru.bogatov.buymetal.model.request.LoginForm;
 import ru.bogatov.buymetal.model.request.RegistrationRequest;
 import ru.bogatov.buymetal.model.request.UpdateUserRequest;
 import ru.bogatov.buymetal.repository.UserRepository;
@@ -23,7 +25,18 @@ public class UserService {
 
     PasswordEncoder passwordEncoder;
 
+    VerificationService verificationService;
+
     public User createUser(RegistrationRequest body) {
+        if (userRepository.isUserExistWithMail(body.getEmail()).isPresent()) {
+            throw ErrorUtils.buildException(ApplicationError.REQUEST_PARAMS_ERROR, "Почта занята");
+        }
+        if (userRepository.isUserExistWithPhoneNumber(body.getPhone()).isPresent()) {
+            throw ErrorUtils.buildException(ApplicationError.REQUEST_PARAMS_ERROR, "Телефон занят");
+        }
+        if (!verificationService.isVerified(body.getPhone())) {
+            throw ErrorUtils.buildException(ApplicationError.BUSINESS_LOGIC_ERROR, "Телефон не подтвержден, или подтверждение просрочилось");
+        }
         User user = new User();
         user.setEmail(body.getEmail());
         user.setPassword(passwordEncoder.encode(body.getPassword()));
@@ -32,7 +45,7 @@ public class UserService {
         user.setCompanyName(body.getCompanyName());
         user.setBlocked(false);
         user.setMailConfirmed(false);
-        user.setPhoneConfirmed(false);
+        user.setPhoneConfirmed(true);
         user.setPosition(body.getPosition());
         user.setFullName(body.getFullName());
         user.setCompanyAddress(body.getCompanyAddress());
@@ -106,5 +119,27 @@ public class UserService {
         user.setBlocked(true);
         userRepository.save(user);
         return null;
+    }
+
+    @Transactional
+    public User findUserAndResetPassword(LoginForm loginForm) {
+        if (!verificationService.isVerified(loginForm.getPhoneNumber())) {
+            throw ErrorUtils.buildException(ApplicationError.BUSINESS_LOGIC_ERROR, "Verification not found");
+        }
+        User user = userRepository.findByPhone(loginForm.getPhoneNumber())
+                .orElseThrow(() -> ErrorUtils.buildException(ApplicationError.NOT_FOUND_ERROR,  "Пользователь не найден"));
+        checkUserStatus(user);
+        if (this.passwordEncoder.matches(loginForm.getPassword(), user.getPassword())) {
+            throw ErrorUtils.buildException(ApplicationError.REQUEST_PARAMS_ERROR, "Старый пароль совпадает с новым");
+        }
+        user.setPassword(this.passwordEncoder.encode(loginForm.getPassword()));
+        verificationService.deleteRecord(loginForm.getPhoneNumber());
+        return userRepository.save(user);
+    }
+
+    private void checkUserStatus(User user) {
+        if (user.isBlocked()) {
+            throw ErrorUtils.buildException(ApplicationError.BUSINESS_LOGIC_ERROR, "Пользователь заблокирован");
+        }
     }
 }

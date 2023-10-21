@@ -10,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.bogatov.buymetal.constant.RouteConstants;
 import ru.bogatov.buymetal.model.request.AuthorizationRequest;
+import ru.bogatov.buymetal.model.request.LoginForm;
 import ru.bogatov.buymetal.model.request.RegistrationRequest;
 import ru.bogatov.buymetal.model.response.AuthenticationResponse;
 import ru.bogatov.buymetal.repository.ExceptionResponse;
@@ -42,6 +43,13 @@ public class AuthenticationController {
     @PostMapping("/refresh/{refreshToken}")
     public ResponseEntity<AuthenticationResponse> refreshToken(@PathVariable String refreshToken){
         return ResponseEntity.ok(authenticationService.refreshTokenPair(refreshToken));
+    }
+
+    @PostMapping("/resetPassword")
+    public ResponseEntity<AuthenticationResponse> resetPassword(@RequestBody @Validated LoginForm resetForm) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(authenticationService.resetPassword(resetForm));
     }
 
 

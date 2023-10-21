@@ -19,9 +19,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(unique = true)
+    @Column(name = "email",unique = true)
     private String email;
 
+    @Column(name = "is_email_confirmed")
     private boolean isMailConfirmed;
 
     private boolean isPhoneConfirmed;
@@ -41,7 +42,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserPosition position;
 
-    @Column(unique = true)
+    @Column(name = "phone",unique = true)
     private String phone;
 
     private String fullName;
