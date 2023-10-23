@@ -3,6 +3,7 @@ package ru.bogatov.buymetal.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.bogatov.buymetal.constant.RouteConstants;
@@ -25,6 +26,7 @@ public class ApplicationResponseController {
                 .body(applicationResponseService.createApplicationResponse(body));
     }
 
+    @PreAuthorize("@customSecurityRules.isUserRequest(#id)")
     @GetMapping("/supplier/{id}")
     public ResponseEntity<Set<ApplicationResponse>> getSupplierResponses(@PathVariable UUID id) {
         return ResponseEntity.ok(applicationResponseService.getSupplierResponses(id));

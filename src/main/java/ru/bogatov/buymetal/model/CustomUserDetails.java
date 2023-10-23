@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import ru.bogatov.buymetal.entity.User;
 import ru.bogatov.buymetal.model.enums.Role;
+import ru.bogatov.buymetal.model.enums.UserPosition;
 
 import java.util.Collection;
 import java.util.Set;
@@ -22,6 +23,7 @@ public class CustomUserDetails implements UserDetails {
     private Set<Role> roleSet;
     private boolean isBlocked;
     private UUID userId;
+    private UserPosition userPosition;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -64,6 +66,7 @@ public class CustomUserDetails implements UserDetails {
                 .email(user.getEmail())
                 .roleSet(Set.of(Role.USER))
                 .userId(user.getId())
+                .userPosition(user.getPosition())
                 .build();
     }
 }

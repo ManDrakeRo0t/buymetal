@@ -12,8 +12,6 @@ import java.util.UUID;
 @Data
 public class OrderSearchRequest {
 
-    UUID customerId;
-    UUID supplierId;
     @NotNull(message = "Поле должно быть заполнено")
     Set<OrderStatus> statuses;
     @Positive(message = "Должно быть больше 0")

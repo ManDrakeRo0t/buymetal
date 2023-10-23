@@ -1,11 +1,13 @@
 package ru.bogatov.buymetal.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.bogatov.buymetal.entity.*;
 import ru.bogatov.buymetal.error.ApplicationError;
 import ru.bogatov.buymetal.error.ErrorUtils;
+import ru.bogatov.buymetal.model.CustomUserDetails;
 import ru.bogatov.buymetal.model.enums.ApplicationStatus;
 import ru.bogatov.buymetal.model.enums.OrderStatus;
 import ru.bogatov.buymetal.model.enums.PaymentStatus;
@@ -76,10 +78,19 @@ public class OrderService {
     @Transactional
     public Order updateOrderStatus(UUID orderId, UpdateOrderStatusRequest body) {
         Order order = findById(orderId);
-        UserPosition whoUpdates = order.getCustomerId().equals(body.getInitiatorId()) ? UserPosition.CUSTOMER : UserPosition.SUPPLIER;
+        CustomUserDetails userDetails = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        UserPosition whoUpdates = userDetails.getUserPosition();
+
+//        if (whoUpdates.equals(UserPosition.CUSTOMER) && !userDetails.getUserId().equals(order.getApplication().getCustomer().getId())) {
+//            throw ErrorUtils.buildException(ApplicationError.REQUEST_PARAMS_ERROR, "Пользователь не является заказчиком данного заказа");
+//        }
+//
+//        if (whoUpdates.equals(UserPosition.SUPPLIER) && !userDetails.getUserId().equals(order.getResponse().getSupplier().getId())) {
+//            throw ErrorUtils.buildException(ApplicationError.REQUEST_PARAMS_ERROR, "Пользователь не является поставщиком данного заказа");
+//        }
 
         if (!statusUpdatePosition.get(body.getTargetStatus()).contains(whoUpdates)) {
-            throw ErrorUtils.buildException(ApplicationError.REQUEST_PARAMS_ERROR, whoUpdates.name() + "Не может менять статус заказа на" + body.getTargetStatus().getValue());
+            throw ErrorUtils.buildException(ApplicationError.REQUEST_PARAMS_ERROR, whoUpdates.name() + " Не может менять статус заказа на " + body.getTargetStatus().getValue());
         }
 
         if (!statusTransitions.contains(order.getStatus().getValue() + body.getTargetStatus().getValue())) {
@@ -103,6 +114,10 @@ public class OrderService {
             throw ErrorUtils.buildException(ApplicationError.REQUEST_PARAMS_ERROR, "Заявка должна быть в статусе OPEN");
         }
 
+        UUID idFromToken = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUserId();
+        if (!idFromToken.equals(customer.getId())) {
+            throw ErrorUtils.buildException(ApplicationError.REQUEST_PARAMS_ERROR, "Только создатель заявки может создать заказ");
+        }
         validateUser(customer);
 
         application.getApplicationResponses()
@@ -157,10 +172,16 @@ public class OrderService {
     public Set<Order> search(OrderSearchRequest body) {
         List<String> statuses = body.getStatuses()
                 .stream().map(OrderStatus::getValue).collect(Collectors.toList());
-        if (body.getCustomerId() != null) {
-            return orderRepository.searchCustomerOrders(body.getCustomerId(), statuses, body.getLimit(), body.getOffset());
+        CustomUserDetails userDetails = ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        if (userDetails.getUserPosition().equals(UserPosition.CUSTOMER)) {
+            return orderRepository.searchCustomerOrders(userDetails.getUserId(), statuses, body.getLimit(), body.getOffset());
         }
-        return orderRepository.searchSupplierOrders(body.getSupplierId(), statuses, body.getLimit(), body.getOffset());
+
+        if (userDetails.getUserPosition().equals(UserPosition.SUPPLIER)) {
+            return orderRepository.searchSupplierOrders(userDetails.getUserId(), statuses, body.getLimit(), body.getOffset());
+        }
+        return Set.of();
     }
 
     public void validateUser(User user) {

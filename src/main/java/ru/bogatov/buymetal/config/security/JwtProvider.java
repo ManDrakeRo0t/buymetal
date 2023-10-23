@@ -24,8 +24,7 @@ public class JwtProvider {
     Integer ACCESS_TOKEN_EXPIRE;
     @Value("${jwt.token.refresh.expire}")
     Integer REFRESH_TOKEN_EXPIRE;
-    private final static String ACCOUNT_CLASS = "class";
-    private final static String ALLOWED_CHATS = "allowedChats";
+    private final static String ACCOUNT_POSITION = "position";
     private final static String ID = "id";
 
     private final Logger logger = LoggerFactory.getLogger(JwtProvider.class);
@@ -39,7 +38,7 @@ public class JwtProvider {
     public String generateTokenForUser(User user) {
         Date date = Date.from(LocalDateTime.now().plusMinutes(ACCESS_TOKEN_EXPIRE).atZone(ZoneId.systemDefault()).toInstant());
         HashMap<String, Object> claims = new HashMap<>();
-        claims.put(ID,user.getId());
+        claims.put(ID, user.getId());
         return Jwts.builder()
                 .setClaims(claims)
                 .setExpiration(date)

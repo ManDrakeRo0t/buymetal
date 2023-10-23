@@ -12,6 +12,4 @@ public class UpdateOrderStatusRequest {
     @NotNull(message = "Статус должен быть указан")
     OrderStatus targetStatus;
 
-    @NotNull(message = "Id пользователя должно быть указано")
-    UUID initiatorId;
 }

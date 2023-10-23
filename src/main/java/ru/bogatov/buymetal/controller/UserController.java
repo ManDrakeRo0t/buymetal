@@ -2,6 +2,7 @@ package ru.bogatov.buymetal.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.bogatov.buymetal.constant.RouteConstants;
@@ -23,16 +24,18 @@ public class UserController {
 
     private final PaymentService paymentService;
 
+    @PreAuthorize("@customSecurityRules.isUserRequest(#id)")
     @GetMapping("/{id}/payments")
     public ResponseEntity<Set<Payment>> getUserPayments(@PathVariable UUID id) {
         return ResponseEntity.ok(paymentService.findAllCustomerPayments(id));
     }
-
+    @PreAuthorize("@customSecurityRules.isUserRequest(#id)")
     @PostMapping("/{id}/block")
     public ResponseEntity<Void> blockUser(@PathVariable UUID id) {
         return ResponseEntity.ok(userService.blockUser(id));
     }
 
+    @PreAuthorize("@customSecurityRules.isUserRequest(#id)")
     @PatchMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable UUID id, @RequestBody @Validated UpdateUserRequest body) {
         return ResponseEntity.ok(userService.updateUser(id, body));
