@@ -25,7 +25,7 @@ public class ApplicationController {
     private final ApplicationService applicationService;
 
     private final ApplicationResponseService applicationResponseService;
-
+    @PreAuthorize("@customSecurityRules.isUserRequest(#body.userId)")
     @PostMapping()
     public ResponseEntity<Application> createApplication(@RequestBody @Validated ApplicationCreationRequest body) {
         return ResponseEntity.status(HttpStatus.CREATED).body(applicationService.createApplication(body));

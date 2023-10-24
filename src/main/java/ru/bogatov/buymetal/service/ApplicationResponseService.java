@@ -14,6 +14,7 @@ import ru.bogatov.buymetal.repository.ApplicationResponseRepository;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -87,5 +88,9 @@ public class ApplicationResponseService {
 
     public void deleteApplicationById(UUID id) {
         applicationResponseRepository.deleteById(id);
+    }
+
+    public List<String> getApplicationsForStatistic(UUID userId, LocalDateTime from, LocalDateTime to) {
+        return applicationResponseRepository.searchCreatedApplicationResponsesForStatistic(userId, from, to);
     }
 }

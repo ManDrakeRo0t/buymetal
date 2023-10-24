@@ -23,7 +23,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query(value = "update usr set is_email_confirmed = :isConfirmed where email = :mail", nativeQuery = true)
     void setMailConfirmation(@Param("mail") String mail, @Param("isConfirmed") boolean isConfirmed);
 
-    @Query(nativeQuery = true, value = "select cast(id as varchar) as id from usr where phone_number = :phoneNumber")
+    @Query(nativeQuery = true, value = "select cast(id as varchar) as id from usr where phone = :phoneNumber")
     Optional<UUID> isUserExistWithPhoneNumber(@Param(value = "phoneNumber") String phoneNumber);
 
     @Query(nativeQuery = true, value = "select cast(id as varchar) as id from usr where email = :mail")

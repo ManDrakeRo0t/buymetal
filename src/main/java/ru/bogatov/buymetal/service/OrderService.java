@@ -189,4 +189,12 @@ public class OrderService {
             throw ErrorUtils.buildException(ApplicationError.REQUEST_PARAMS_ERROR, "Пользователь заблокирован");
         }
     }
+
+    public Map<String ,Set<Order>> getOrdersForStatistic(UUID userId, LocalDate from, LocalDate to) {
+        return Map.of(
+                "completed", orderRepository.searchCompetedOrdersForStatistic(userId, from, to),
+                "rejected", orderRepository.searchRejectedOrdersForStatistic(userId, from, to),
+                "created", orderRepository.searchCreatedOrdersForStatistic(userId, from, to)
+        );
+    }
 }

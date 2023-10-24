@@ -13,6 +13,7 @@ import ru.bogatov.buymetal.model.request.ApplicationCreationRequest;
 import ru.bogatov.buymetal.model.request.ApplicationSearchRequest;
 import ru.bogatov.buymetal.repository.ApplicationRepository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -74,4 +75,7 @@ public class ApplicationService {
         return applicationRepository.findCustomerApplications(statuses, customerId);
     }
 
+    public List<String> getApplicationsForStatistic(UUID userId, LocalDateTime from, LocalDateTime to) {
+        return applicationRepository.searchCreatedApplicationsForStatistic(userId, from, to);
+    }
 }

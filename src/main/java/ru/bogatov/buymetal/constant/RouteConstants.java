@@ -8,4 +8,5 @@ public class RouteConstants {
     public static final String ORDER = "/order";
     public static final String USER = "/user";
     public static final String CODE = "/code";
+    public static final String STATISTIC = "/statistic";
 }
