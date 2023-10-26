@@ -7,7 +7,6 @@ import ru.bogatov.buymetal.constant.RouteConstants;
 import ru.bogatov.buymetal.model.response.StatisticContainerResponse;
 import ru.bogatov.buymetal.service.StatisticService;
 
-import java.util.UUID;
 
 @RestController
 @AllArgsConstructor

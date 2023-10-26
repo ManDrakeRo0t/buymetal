@@ -1,10 +1,14 @@
 server:
   port: 8080
 
+logging:
+  level:
+    org.springframework: DEBUG
 
 spring:
   main:
     allow-circular-references: true
+    allow-bean-definition-overriding: true
   jpa:
     hibernate:
       ddl-auto: update
@@ -38,7 +42,7 @@ application:
     mail: false
 
 # TODO API
-# API for statistics
+# API for statistics +
 # API for generate documents
 #
 # TODO services
