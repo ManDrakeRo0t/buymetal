@@ -1,5 +1,6 @@
 package ru.bogatov.buymetal.controller;
 
+import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,38 +19,31 @@ import java.util.Set;
 import java.util.UUID;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping(RouteConstants.API_V1 + RouteConstants.ORDER)
 public class OrderController {
 
     OrderService orderService;
-    UserService userService;
-    ApplicationContext context;
 
-    public OrderController(OrderService orderService, UserService userService, ApplicationContext context) {
-        this.orderService = orderService;
-        this.userService = userService;
-        this.context = context;
-    }
-
-//    @PreAuthorize("@customSecurityRules.isApplicationOwnerRequest(#body.applicationId)")
+    @PreAuthorize("@customSecurityRules.isApplicationOwnerRequest(#body.applicationId)")
     @PostMapping()
     public ResponseEntity<Order> createOrder(@RequestBody @Validated OrderCreationRequest body) {
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createOrder(body));
     }
-//    @PreAuthorize("@customSecurityRules.isOrderOwnersRequest(#id)")
+    @PreAuthorize("@customSecurityRules.isOrderOwnersRequest(#id)")
     @PostMapping("/{id}/status")
-    private ResponseEntity<Order> updateOrderStatus(@PathVariable UUID id, @RequestBody @Validated UpdateOrderStatusRequest body) {
+    public ResponseEntity<Order> updateOrderStatus(@PathVariable UUID id, @RequestBody @Validated UpdateOrderStatusRequest body) {
         return ResponseEntity.ok(orderService.updateOrderStatus(id, body));
     }
 
-//    @PreAuthorize("@customSecurityRules.isOrderOwnersRequest(#id)")
+    @PreAuthorize("@customSecurityRules.isOrderOwnersRequest(#id)")
     @GetMapping("/{id}")
-    private ResponseEntity<Order> findOrderById(@PathVariable UUID id) {
+    public ResponseEntity<Order> findOrderById(@PathVariable UUID id) {
         return ResponseEntity.ok(orderService.findById(id));
     }
 
     @PostMapping("/search")
-    private ResponseEntity<Set<Order>> search(@RequestBody @Validated OrderSearchRequest body) {
+    public ResponseEntity<Set<Order>> search(@RequestBody @Validated OrderSearchRequest body) {
         return ResponseEntity.ok(orderService.search(body));
     }
 
