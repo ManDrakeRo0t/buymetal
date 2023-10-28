@@ -23,6 +23,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/buymetal
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: asd4fgh
+      SPRING_MINIO_URL : http://minio:9000
 
   minio:
     image: minio/minio:latest
