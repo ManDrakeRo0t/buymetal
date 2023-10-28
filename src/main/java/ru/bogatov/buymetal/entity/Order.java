@@ -47,4 +47,7 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
+    @OneToOne(fetch = FetchType.EAGER)
+    private File document;
+
 }

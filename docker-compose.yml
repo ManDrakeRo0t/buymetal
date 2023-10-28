@@ -24,6 +24,21 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: asd4fgh
 
+  minio:
+    image: minio/minio:latest
+    environment:
+      MINIO_ROOT_USER: "admin"
+      MINIO_ROOT_PASSWORD: "admin1234"
+      MINIO_ACCESS_KEY: "admin"
+      MINIO_SECRET_KEY: "admin1234"
+    volumes:
+      - ./data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    command: server /data --console-address :9001
+
 volumes:
   postgres-data:
+  minio:
 

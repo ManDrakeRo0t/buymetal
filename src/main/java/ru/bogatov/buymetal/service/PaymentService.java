@@ -28,6 +28,7 @@ public class PaymentService {
         payment.setCustomerId(customerId);
         payment.setRelatedOrderId(orderId);
         payment.setPaymentDueDate(LocalDate.now().plusWeeks(1));
+        payment.setStatus(PaymentStatus.WAITING);
         payment.setAmount(amount);
         return paymentRepository.save(payment);
     }

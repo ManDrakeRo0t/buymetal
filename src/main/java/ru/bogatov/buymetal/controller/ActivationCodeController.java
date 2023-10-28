@@ -32,7 +32,7 @@ public class ActivationCodeController {
     }
 
     @GetMapping("/test/{id}")
-    public ResponseEntity<String> testDoc(@PathVariable UUID id) {
+    public ResponseEntity<Void> testDoc(@PathVariable UUID id) {
         return ResponseEntity.ok(documentGenerationService.generateDocument(id));
     }
 

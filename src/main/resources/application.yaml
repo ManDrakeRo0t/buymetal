@@ -27,6 +27,13 @@ spring:
     serialization:
       fail-on-empty-beans: false
 
+  minio:
+    url: http://localhost:9000
+    access-key: admin
+    secret-key: admin1234
+    create-bucket: true
+    bucket: "document-storage"
+
 jwt:
   secret: test-secret
   token:

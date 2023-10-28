@@ -35,6 +35,8 @@ public class OrderService {
 
     private final UserService userService;
 
+    private final DocumentGenerationService documentGenerationService;
+
     private final Set<String> statusTransitions = Set.of(
             OrderStatus.OPEN.getValue() + OrderStatus.REJECTED.getValue(),
             OrderStatus.OPEN.getValue() + OrderStatus.AGREED.getValue(),
@@ -131,6 +133,10 @@ public class OrderService {
                 .orElseThrow(() -> ErrorUtils.buildException(ApplicationError.NOT_FOUND_ERROR, "Заказ не найден"));
     }
 
+    public Order saveOrder(Order order) {
+        return orderRepository.save(order);
+    }
+
     private void processOrderStatusUpdate(Order order, OrderStatus targetStatus) {
         switch (targetStatus) {
             case AGREED:
@@ -151,7 +157,7 @@ public class OrderService {
                 Application application = order.getApplication();
                 application.setStatus(ApplicationStatus.ARCHIVED);
                 applicationService.save(application);
-                //todo serviceToSendDocs
+                documentGenerationService.generateDocument(order.getId());
                 break;
             case REJECTED:
                 order.setRejectDate(LocalDate.now());

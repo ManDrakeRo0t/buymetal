@@ -38,7 +38,7 @@ public class ApplicationResponseService {
 
         ApplicationResponse applicationResponse = fillBaseParams(body);
         applicationResponse.setPrice(body.getPrice());
-        applicationResponse.setFullPrice(body.getFullPrice());
+        applicationResponse.setFullPrice(body.getPrice() * body.getAmount());
         applicationResponse.setSimilar(body.isSimilar());
         applicationResponse.setInStock(body.isInStock());
         applicationResponse.setCreationDate(LocalDateTime.now());
