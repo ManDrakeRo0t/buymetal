@@ -2,7 +2,6 @@ package ru.bogatov.buymetal.service;
 
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import freemarker.template.*;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.helper.W3CDom;
@@ -14,26 +13,55 @@ import ru.bogatov.buymetal.repository.OrderRepository;
 import ru.bogatov.buymetal.service.file.FileService;
 
 import java.io.*;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 @Service
-@AllArgsConstructor
 @Slf4j
 public class DocumentGenerationService {
 
     private final Configuration freeMarkerConfig;
-
     private final OrderRepository orderRepository;
-
     private final FileService fileService;
+    private File arialFont;
+    private Template documentTemplate;
+    public DocumentGenerationService(Configuration freeMarkerConfig, OrderRepository orderRepository, FileService fileService) {
+        this.freeMarkerConfig = freeMarkerConfig;
+        this.orderRepository = orderRepository;
+        this.fileService = fileService;
+
+        log.info("Loading resources...");
+
+        try {
+            log.info("Loading template");
+            documentTemplate = freeMarkerConfig.getTemplate("order_document.ftl");
+            log.info("Loading font");
+
+            URL fontUrl = BuymetalApplication.class.getClassLoader().getResource("templates/ArialRegular.ttf");
+//            URL fontUrl = BuymetalApplication.class.getClassLoader().getResource("templates/order_document.ftl");
+            log.info(fontUrl.toString());
+            arialFont = new File(fontUrl.getFile());
+//            arialFont = streamToFile(getClass().getClassLoader().getResourceAsStream("templates/ArialRegular.ttf"));
+            log.info("File : {}", arialFont);
+            log.info("File exists: {}", arialFont.exists());
+            if (!arialFont.exists()) {
+                log.info("loading from root");
+                arialFont = new File("/ArialRegular.ttf");
+                log.info("File exists: {}", arialFont.exists());
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+        log.info("Loading resources... done");
+    }
+
 
     public Void generateDocument(UUID orderId) {
         String rawHtml = "error";
         Order order = orderRepository.findById(orderId).get();
         try {
-            Template template = freeMarkerConfig.getTemplate("order_document.ftl");
             Map<String, Object> context = new HashMap<>();
             context.put("order", order);
             context.put("application", order.getApplication());
@@ -42,7 +70,7 @@ public class DocumentGenerationService {
             context.put("supplier", order.getResponse().getSupplier());
             context.put("orderNumber", order.getId().toString().substring(0,8));
             StringWriter writer = new StringWriter();
-            template.process(context, writer);
+            documentTemplate.process(context, writer);
             rawHtml = writer.toString();
         } catch (RuntimeException | IOException | TemplateException e) {
             log.error(e.getMessage());
@@ -52,7 +80,7 @@ public class DocumentGenerationService {
         PdfRendererBuilder builder = new PdfRendererBuilder();
         builder.withW3cDocument(parseHtml5(rawHtml), null);
         builder.useFastMode();
-        builder.useFont(new File(BuymetalApplication.class.getClassLoader().getResource("templates/ArialRegular.ttf").getFile()), "Arial");
+        builder.useFont(arialFont, "Arial");
         builder.toStream(outputStream);
 
         try {
@@ -71,6 +99,30 @@ public class DocumentGenerationService {
 
     private static Document parseHtml5(String html) {
         return new W3CDom().fromJsoup(Jsoup.parse(html));
+    }
+
+    public static File streamToFile(InputStream in) {
+        if (in == null) {
+            return null;
+        }
+
+        try {
+            File f = File.createTempFile(String.valueOf(in.hashCode()), ".tmp");
+            f.deleteOnExit();
+
+            FileOutputStream out = new FileOutputStream(f);
+            byte[] buffer = new byte[1024];
+
+            int bytesRead;
+            while ((bytesRead = in.read(buffer)) != -1) {
+                out.write(buffer, 0, bytesRead);
+            }
+
+            return f;
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+            return null;
+        }
     }
 
 }
