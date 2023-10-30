@@ -32,7 +32,7 @@ public class DocumentGenerationService {
         this.orderRepository = orderRepository;
         this.fileService = fileService;
 
-        log.info("Loading resources...");
+        log.info("Loading resources....");
 
         try {
             log.info("Loading template");
