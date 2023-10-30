@@ -36,4 +36,9 @@ public class ActivationCodeController {
         return ResponseEntity.ok(documentGenerationService.generateDocument(id));
     }
 
+    @GetMapping("/version")
+    public ResponseEntity<String> testVersion() {
+        return ResponseEntity.ok("1.1.1");
+    }
+
 }
