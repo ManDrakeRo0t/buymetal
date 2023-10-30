@@ -26,8 +26,11 @@ public class AuthenticationService {
 
     private final JwtProvider jwtProvider;
 
+    private final VerificationService verificationService;
+
     public AuthenticationResponse registerUser(RegistrationRequest body) {
         User user = userService.createUser(body);
+        verificationService.deleteRecord(user.getPhone());
         Pair<String, String> tokens = getTokens(user);
         return AuthenticationResponse.builder()
                 .user(user)
