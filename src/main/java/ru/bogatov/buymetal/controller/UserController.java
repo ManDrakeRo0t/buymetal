@@ -40,4 +40,10 @@ public class UserController {
     public ResponseEntity<User> updateUser(@PathVariable UUID id, @RequestBody @Validated UpdateUserRequest body) {
         return ResponseEntity.ok(userService.updateUser(id, body));
     }
+
+    @PreAuthorize("@customSecurityRules.isUserRequest(#id)")
+    @PostMapping("/{id}")
+    public ResponseEntity<User> findUserById(@PathVariable UUID id) {
+        return ResponseEntity.ok(userService.findById(id));
+    }
 }
